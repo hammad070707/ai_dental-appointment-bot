@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+python-dotenv
+langchain
+langchain-openai
+langgraph
+langchain-community
+chromadb
+google-api-python-client
+google-auth
+twilio
+pydantic
+python-dateutil
+sentence-transformers 
+langchain-huggingface
+
+

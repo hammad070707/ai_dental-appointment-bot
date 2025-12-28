@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Dental Bot</title>
+</head>
+<body style="background-color: white; font-family: Arial, sans-serif;">
+
+    <!-- 🦷 WIDGET CODE START (Sirf yeh dikhega) -->
+    <div id="dental-bot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <!-- Chat Button -->
+        <button onclick="toggleChat()" style="background-color: #007bff; color: white; border: none; padding: 15px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: transform 0.2s;">
+            💬
+        </button>
+
+        <!-- Chat Window -->
+        <div id="dental-chat-window" style="display: none; width: 350px; height: 500px; background: white; border-radius: 15px; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.2); margin-bottom: 15px; position: absolute; bottom: 70px; right: 0; overflow: hidden;">
+            
+            <!-- Header -->
+            <div style="background-color: #007bff; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                <span style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">🦷</span> Smart Dental Bot
+                </span>
+                <span onclick="toggleChat()" style="cursor: pointer; font-size: 18px;">✖</span>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; background-color: #f9f9f9; display: flex; flex-direction: column; gap: 10px;">
+                <!-- Welcome Message -->
+                <div style="align-self: flex-start; background: #e9ecef; color: #333; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                    Asalam-o-Alaikum! 👋 <br>Main appointment book karne mein kaise madad kar sakta hoon?
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div style="padding: 10px; background: white; border-top: 1px solid #eee; display: flex; align-items: center; gap: 5px;">
+                <input type="text" id="user-input" placeholder="Type here..." onkeypress="handleKeyPress(event)" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none;">
+                <button onclick="sendMessage()" style="background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 50%; cursor: pointer; font-size: 16px;">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 👇 YEH HAI AAPKA LOCAL LINK
+        const API_URL = "http://127.0.0.1:8000/chat"; 
+
+        // UNIQUE ID GENERATOR
+        const session_id = "User_" + Date.now();
+
+        function toggleChat() {
+            const chatWindow = document.getElementById("dental-chat-window");
+            chatWindow.style.display = chatWindow.style.display === "none" ? "flex" : "none";
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            addMessage(message, "user");
+            inputField.value = "";
+
+            const loadingId = addMessage("Typing...", "bot", true);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        query: message, 
+                        session_id: session_id 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById(loadingId).remove();
+                addMessage(data.response, "bot");
+
+            } catch (error) {
+                document.getElementById(loadingId).innerText = "❌ Error: Server connect nahi hua.";
+                console.error(error);
+            }
+        }
+
+        function addMessage(text, sender, isLoading = false) {
+            const msgDiv = document.createElement("div");
+            msgDiv.style.maxWidth = "80%";
+            msgDiv.style.padding = "10px 15px";
+            msgDiv.style.borderRadius = "15px";
+            msgDiv.style.fontSize = "14px";
+            msgDiv.style.lineHeight = "1.4";
+            msgDiv.style.boxShadow = "0 1px 2px rgba(0,0,0,0.1)";
+            msgDiv.style.wordWrap = "break-word";
+
+            if (sender === "user") {
+                msgDiv.style.alignSelf = "flex-end";
+                msgDiv.style.backgroundColor = "#007bff";
+                msgDiv.style.color = "white";
+                msgDiv.style.borderRadius = "15px 15px 0 15px";
+            } else {
+                msgDiv.style.alignSelf = "flex-start";
+                msgDiv.style.backgroundColor = "#e9ecef";
+                msgDiv.style.color = "#333";
+                msgDiv.style.borderRadius = "15px 15px 15px 0";
+                if (isLoading) {
+                    msgDiv.id = "loading-msg";
+                    msgDiv.style.fontStyle = "italic";
+                    msgDiv.style.color = "#777";
+                }
+            }
+
+            msgDiv.innerHTML = text.replace(/\n/g, "<br>");
+            document.getElementById("chat-messages").appendChild(msgDiv);
+            
+            const chatBox = document.getElementById("chat-messages");
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return msgDiv.id;
+        }
+    </script>
+</body>
+</html>

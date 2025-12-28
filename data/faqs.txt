@@ -1,0 +1,21 @@
+BUSINESS INFORMATION:
+Name: Smart Care Dental Clinic
+Doctor Name: Dr. Ali Khan (BDS, FCPS)
+Address: Shop 12, Blue Area Towers, Islamabad, Pakistan.
+Contact: +92-300-1234567
+
+TIMINGS:
+Monday to Saturday: 2:00 PM to 8:00 PM
+Sunday: Closed
+
+SERVICES & PRICING:
+Consultation Checkup: 1500 PKR
+Scaling / Cleaning: 3000 PKR
+Root Canal Treatment (RCT): 8000 PKR
+Braces (Installment plan available): 150,000 PKR
+Teeth Whitening: 10,000 PKR
+
+POLICIES:
+- Appointments should be booked at least 2 hours in advance.
+- Please arrive 10 minutes before your scheduled time.
+- Cancellations must be informed via chatbot etc
